@@ -34,3 +34,19 @@ the same Wi-Fi. Plain http has no offline mode.
 - Repeat signs and numbered endings are followed; D.C./D.S./coda jumps are not.
 - The engraver is OpenSheetMusicDisplay (BSD-3-Clause). The sample Moonlight Sonata score was converted from the
   public-domain Mutopia Project MIDI.
+
+## Library: sending pieces from the Mac to the iPad
+
+The site has a small private library (`api/library.ts`, a Vercel Function that keeps files in Vercel Blob).
+Teacher's "Send to iPad" button uploads a piece to it; the app's "Your library" section lists what is there and
+downloads it to the device (it is then stored in the browser, so it works offline).
+
+One-time setup in the Vercel dashboard, for this project:
+
+1. Storage → Create → Blob → connect it to the project (this adds `BLOB_READ_WRITE_TOKEN`).
+2. Settings → Environment Variables → add `LIBRARY_PASSCODE` (a long phrase) for Production.
+3. Push the code so the project redeploys.
+
+Then in Teacher: Pieces → iPad Site… → the site's address and the passcode. On the iPad: Your library → enter the
+passcode once. Every request needs the passcode; the list of pieces is not public. (A file's own storage address
+contains a random token, so it cannot be guessed, but anyone who has it can open that file.)

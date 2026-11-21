@@ -27,8 +27,10 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,musicxml,webmanifest}'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        // The library service is never answered from the offline cache.
+        navigateFallbackDenylist: [/^\/api\//],
       },
     }),
   ],
-  test: { environment: 'node', include: ['src/**/*.test.ts'] },
+  test: { environment: 'node', include: ['src/**/*.test.ts', 'api/**/*.test.ts'] },
 })

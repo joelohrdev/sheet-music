@@ -494,3 +494,35 @@ footer.muted {
     display: none;
   }
 }
+
+/* Cloud library */
+
+.connect .row,
+.library .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.connect input {
+  flex: 1;
+  min-width: 200px;
+  min-height: 50px;
+  padding: 0 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.samples .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+button.quiet {
+  background: transparent;
+  color: var(--muted);
+  border-color: transparent;
+}

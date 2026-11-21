@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { isZipped } from '../player/scoreHost'
 import { PieceInfo, Settings, addPiece, listPieces, removePiece } from '../storage'
+import { CloudLibrary } from './CloudLibrary'
 import { Icon } from './Icon'
 
 type Entry = PieceInfo & { settings: Settings }
 
 const SAMPLES = [
   { name: 'Moonlight Sonata - 1st Movement', file: 'moonlight-sonata-1st-movement.musicxml', note: 'Beethoven, public domain' },
+  { name: 'Jingle Bells', file: 'jingle-bells.musicxml', note: 'The chorus, simple and in C major' },
   { name: 'Ode to Joy (sample)', file: 'ode-to-joy.musicxml', note: 'A short piece with a repeat, to try things out' },
 ]
 
@@ -132,6 +134,8 @@ export function Library() {
           })}
         </ul>
       </section>
+
+      <CloudLibrary have={have} onChanged={() => void refresh()} />
 
       {missing.length > 0 && (
         <section aria-label="Samples">
