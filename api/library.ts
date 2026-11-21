@@ -1,17 +1,16 @@
 /**
  * A small private library for the pieces, so a piece added on the Mac shows up on the iPad.
  *
- * Files live in Vercel Blob under library/<random token>/<name>. Everything goes through this
- * function and needs the passcode in the LIBRARY_PASSCODE setting, so the list of pieces is not
- * public; only each file's own storage address (which contains a random token) is.
+ * Files live in a private Vercel Blob store under library/<random token>/<name>. Nothing in the store
+ * can be opened without the store's token, and everything goes through this function, which needs the
+ * passcode in the LIBRARY_PASSCODE setting.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { del, list, put } from '@vercel/blob'
+import { del, get, list, put } from '@vercel/blob'
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 
 export interface StoredFile {
   path: string
-  url: string
   size: number
   uploadedAt: string
 }
@@ -20,8 +19,9 @@ export interface StoredFile {
 export interface Store {
   list(): Promise<StoredFile[]>
   put(path: string, body: Buffer): Promise<void>
-  remove(url: string): Promise<void>
-  read(url: string): Promise<Buffer>
+  remove(path: string): Promise<void>
+  /** Null when there is no such file. */
+  read(path: string): Promise<Buffer | null>
 }
 
 export interface Incoming {
@@ -93,7 +93,9 @@ export async function handle(
       }
       const file = byPath(request.query.path)
       if (!file) return { status: 404, json: { error: 'No such piece.' } }
-      return { status: 200, bytes: await store.read(file.url) }
+      const bytes = await store.read(file.path)
+      if (!bytes) return { status: 404, json: { error: 'No such piece.' } }
+      return { status: 200, bytes }
     }
     case 'POST': {
       const body = request.body
@@ -103,7 +105,7 @@ export async function handle(
       if (!kind.ok) return { status: 400, json: { error: 'That does not look like a MusicXML file.' } }
       const name = cleanName(request.query.name ?? '', kind.zipped)
       // A piece sent again under the same name replaces the earlier one.
-      for (const old of files.filter((f) => nameOf(f.path) === name)) await store.remove(old.url)
+      for (const old of files.filter((f) => nameOf(f.path) === name)) await store.remove(old.path)
       const path = `${PREFIX}${token()}/${name}`
       await store.put(path, body)
       return { status: 201, json: { path, name } }
@@ -111,7 +113,7 @@ export async function handle(
     case 'DELETE': {
       const file = byPath(request.query.path)
       if (!file) return { status: 404, json: { error: 'No such piece.' } }
-      await store.remove(file.url)
+      await store.remove(file.path)
       return { status: 200, json: { removed: nameOf(file.path) } }
     }
     default:
@@ -126,22 +128,22 @@ const blobStore: Store = {
     do {
       const page = await list({ prefix: PREFIX, cursor, limit: 1000 })
       for (const blob of page.blobs) {
-        found.push({ path: blob.pathname, url: blob.url, size: blob.size, uploadedAt: new Date(blob.uploadedAt).toISOString() })
+        found.push({ path: blob.pathname, size: blob.size, uploadedAt: new Date(blob.uploadedAt).toISOString() })
       }
       cursor = page.hasMore ? page.cursor : undefined
     } while (cursor)
     return found
   },
   async put(path, body) {
-    await put(path, body, { access: 'public', addRandomSuffix: false, contentType: 'application/octet-stream' })
+    await put(path, body, { access: 'private', addRandomSuffix: false, contentType: 'application/octet-stream' })
   },
-  async remove(url) {
-    await del(url)
+  async remove(path) {
+    await del(path)
   },
-  async read(url) {
-    const response = await fetch(url)
-    if (!response.ok) throw new Error(`The stored file could not be read (${response.status}).`)
-    return Buffer.from(await response.arrayBuffer())
+  async read(path) {
+    const result = await get(path, { access: 'private', useCache: false })
+    if (!result || result.statusCode !== 200) return null
+    return Buffer.from(await new Response(result.stream).arrayBuffer())
   },
 }
 

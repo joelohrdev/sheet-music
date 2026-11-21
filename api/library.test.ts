@@ -12,15 +12,14 @@ function memoryStore(): Store & { files: Map<string, Buffer> } {
     },
     async put(path, body) {
       files.set(path, body)
-      info.set(path, { path, url: `https://blob.example/${path}`, size: body.length, uploadedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, clock++)).toISOString() })
+      info.set(path, { path, size: body.length, uploadedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, clock++)).toISOString() })
     },
-    async remove(url) {
-      const path = url.replace('https://blob.example/', '')
+    async remove(path) {
       files.delete(path)
       info.delete(path)
     },
-    async read(url) {
-      return files.get(url.replace('https://blob.example/', ''))!
+    async read(path) {
+      return files.get(path) ?? null
     },
   }
 }

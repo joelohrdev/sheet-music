@@ -43,10 +43,10 @@ downloads it to the device (it is then stored in the browser, so it works offlin
 
 One-time setup in the Vercel dashboard, for this project:
 
-1. Storage → Create → Blob → connect it to the project (this adds `BLOB_READ_WRITE_TOKEN`).
+1. Storage → Create → Blob (a **private** store) → connect it to the project (this adds `BLOB_READ_WRITE_TOKEN`).
 2. Settings → Environment Variables → add `LIBRARY_PASSCODE` (a long phrase) for Production.
 3. Push the code so the project redeploys.
 
 Then in Teacher: Pieces → iPad Site… → the site's address and the passcode. On the iPad: Your library → enter the
-passcode once. Every request needs the passcode; the list of pieces is not public. (A file's own storage address
-contains a random token, so it cannot be guessed, but anyone who has it can open that file.)
+passcode once. Every request needs the passcode, and the stored files cannot be opened without the store's token, so
+nothing is public.
