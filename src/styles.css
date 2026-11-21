@@ -526,3 +526,99 @@ button.quiet {
   color: var(--muted);
   border-color: transparent;
 }
+
+/* Keyboard map */
+
+.keymap-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: max(8px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.keymap-page .topbar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.keymap-page .intro {
+  margin: 0;
+}
+
+.keymap-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 36px;
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.keymap-info .big {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 160px;
+}
+
+.keymap-info .big strong {
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--blue);
+}
+
+.keymap-info dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  align-content: start;
+}
+
+.keymap-info .row {
+  display: contents;
+}
+
+.keymap-info dt {
+  color: var(--muted);
+}
+
+.keymap-info dd {
+  margin: 0;
+}
+
+/* The chart is a printed page: dark ink on white whatever the appearance. */
+.keymap-chart {
+  display: flex;
+  background: #ffffff;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.keymap-clefs {
+  flex: none;
+}
+
+.keymap-scroll {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.keymap-scroll svg {
+  display: block;
+}
+
+.keymap-chart .key,
+.keymap-chart .note {
+  cursor: pointer;
+}
+
+.keymap-page .note {
+  font-size: 14px;
+}

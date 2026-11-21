@@ -82,10 +82,13 @@ export function Library() {
       <header className="hero">
         <h1>Sheet Keys</h1>
         <p>Add sheet music, then play along: blocks fall onto the keyboard showing which keys to hit.</p>
-        <div className="actions">
+        <div className="actions row">
           <button className="primary" disabled={busy} onClick={() => picker.current?.click()}>
             <Icon name="import" /> Add sheet music
           </button>
+          <a className="button" href="#/keys">
+            Keyboard map
+          </a>
           <input
             ref={picker}
             type="file"
