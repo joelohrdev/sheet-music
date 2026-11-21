@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/storage.ts","./src/audio/synth.ts","./src/components/icon.tsx","./src/components/library.tsx","./src/components/player.tsx","./src/components/stage.tsx","./src/lib/keys.ts","./src/player/engine.ts","./src/player/scorehost.ts","./src/player/timeline.test.ts","./src/player/timeline.ts","./vite.config.ts"],"version":"5.6.3"}
